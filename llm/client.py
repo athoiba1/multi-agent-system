@@ -1,7 +1,8 @@
-from openai import AsyncOpenAI
+import ollama
 from typing import Optional
 import logging
 import os
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -9,16 +10,12 @@ logger = logging.getLogger(__name__)
 class LLMClient:
     def __init__(
         self,
-        api_key: Optional[str] = None,
-        model: str = "gpt-4o-mini",
-        base_url: Optional[str] = None,
+        model: str = None,
+        host: Optional[str] = None,
     ):
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        self.model = model or os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-        self.client = AsyncOpenAI(
-            api_key=self.api_key,
-            base_url=base_url,
-        )
+        self.model = model or os.getenv("OLLAMA_MODEL", "llama3.2")
+        self.host = host or os.getenv("OLLAMA_HOST", "http://localhost:11434")
+        self.client = ollama.AsyncClient(host=self.host)
 
     async def complete(
         self,
@@ -28,16 +25,18 @@ class LLMClient:
         max_tokens: int = 2000,
     ) -> str:
         try:
-            response = await self.client.chat.completions.create(
+            response = await self.client.chat(
                 model=self.model,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt},
                 ],
-                temperature=temperature,
-                max_tokens=max_tokens,
+                options={
+                    "temperature": temperature,
+                    "num_predict": max_tokens,
+                },
             )
-            return response.choices[0].message.content or ""
+            return response.message.content or ""
 
         except Exception as e:
             logger.error(f"LLM call failed: {e}")
@@ -50,9 +49,17 @@ class LLMClient:
         temperature: float = 0.3,
         max_tokens: int = 2000,
     ) -> str:
-        return await self.complete(
-            system_prompt=system_prompt + "\n\nYou MUST respond with valid JSON only. No markdown, no explanation, just JSON.",
+        json_system = system_prompt + "\n\nYou MUST respond with valid JSON only. No markdown, no explanation, just JSON."
+        response = await self.complete(
+            system_prompt=json_system,
             user_prompt=user_prompt,
             temperature=temperature,
             max_tokens=max_tokens,
         )
+
+        cleaned = response.strip()
+        if cleaned.startswith("```"):
+            lines = cleaned.split("\n")
+            cleaned = "\n".join(lines[1:-1] if lines[-1].strip() == "```" else lines[1:])
+
+        return cleaned

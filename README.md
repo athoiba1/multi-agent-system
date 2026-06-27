@@ -19,11 +19,22 @@ A system that decomposes complex user requests into discrete steps and executes 
 pip install -r requirements.txt
 ```
 
-### 2. Configure Environment
+### 2. Install and Start Ollama
+
+```bash
+# Install Ollama: https://ollama.ai
+# Pull a model:
+ollama pull llama3.2
+
+# Start Ollama server (runs on http://localhost:11434):
+ollama serve
+```
+
+### 3. Configure Environment
 
 ```bash
 cp .env.example .env
-# Edit .env with your OpenAI API key
+# Edit .env to configure model (default: llama3.2)
 ```
 
 ### 3. Run Server
@@ -106,7 +117,7 @@ multi-agent-system/
 ├── agents/           # Specialized agent implementations
 ├── api/              # FastAPI endpoints
 ├── docs/             # Design and post-mortem docs
-├── llm/              # OpenAI client and prompts
+├── llm/              # Ollama client and prompts
 ├── models/           # Pydantic data models
 ├── orchestrator/     # Pipeline and batch processing
 ├── streaming/        # Event streaming
