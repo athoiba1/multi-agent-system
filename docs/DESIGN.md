@@ -96,7 +96,7 @@ All orchestration logic is implemented from scratch:
 - `SSEHandler`: Server-Sent Events for HTTP streaming
 
 ### LLM (`llm/`)
-- `LLMClient`: Async wrapper around OpenAI API
+- `LLMClient`: Async wrapper around Ollama API (local inference)
 - `prompts.py`: Agent-specific system prompts
 
 ## API Endpoints
@@ -112,8 +112,8 @@ All orchestration logic is implemented from scratch:
 ## Configuration
 
 Environment variables (`.env`):
-- `OPENAI_API_KEY`: OpenAI API key
-- `OPENAI_MODEL`: Model to use (default: gpt-4o-mini)
+- `OLLAMA_HOST`: Ollama server URL (default: http://localhost:11434)
+- `OLLAMA_MODEL`: Model to use (default: llama3.2)
 - `MAX_RETRIES`: Maximum retry attempts (default: 3)
 - `RETRY_DELAY`: Base delay between retries (default: 1.0s)
 - `BATCH_SIZE`: Default batch size (default: 5)
