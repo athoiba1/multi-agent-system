@@ -1,7 +1,7 @@
 from typing import Any, Optional
 from models.task import Task, Step
 from agents.planner import PlannerAgent
-from streaming.events import EventQueue, EventType
+from streaming.events import EventQueue, EventType, Event
 import logging
 
 logger = logging.getLogger(__name__)

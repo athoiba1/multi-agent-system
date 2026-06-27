@@ -1,5 +1,5 @@
 from typing import Any, Callable, Awaitable, Optional
-from streaming.events import EventQueue, EventType
+from streaming.events import EventQueue, EventType, Event
 import asyncio
 import logging
 

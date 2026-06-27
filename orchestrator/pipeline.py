@@ -2,7 +2,7 @@ from typing import Any, Optional
 from models.task import Task, Step, StepStatus
 from models.results import PipelineResult, StepResult, ResultStatus
 from agents.base import Agent
-from streaming.events import EventQueue, EventType
+from streaming.events import EventQueue, EventType, Event
 import asyncio
 import time
 import logging
